@@ -63,5 +63,5 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	link.Draw(gfx);
-	font.DrawText("BROTHERSSS!!!", { wnd.mouse.GetPosX(),wnd.mouse.GetPosY() }, gfx);
+	font.DrawText("BROTHERSSS!!! \nWITH me", { wnd.mouse.GetPosX(),wnd.mouse.GetPosY() }, gfx);
 }

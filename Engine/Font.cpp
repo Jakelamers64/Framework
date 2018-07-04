@@ -20,9 +20,18 @@ void Font::DrawText(const std::string & text, const Vei2 pos, Graphics & gfx) co
 	Vei2 curPos = pos;
 	for (auto c : text)
 	{ 
+		//on new line char reset x and jump a glyph height down
+		if (c == '\n')
+		{
+			//carrige return
+			curPos.x = pos.x;
+			//line feed
+			curPos.y += glyphHeight;
+			continue;
+		}
 		//only draw chars that are on the font sheet
 		//first char + 1 becuase might as well skip ' '
-		if ( c >= firstChar + 1 && c <= lastChar )
+		else if ( c >= firstChar + 1 && c <= lastChar )
 		{
 			gfx.DrawSpriteSubstitute( curPos.x, curPos.y,Colors::White, MapGlyphRect( c ), gfx.GetScreenRect(), surface, chroma );
 		}
