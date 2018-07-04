@@ -321,6 +321,15 @@ void Graphics::PutPixel( int x,int y,Color c )
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
 
+Color Graphics::GetPixel(int x, int y) const
+{
+	assert(x >= 0);
+	assert(x < int(Graphics::ScreenWidth));
+	assert(y >= 0);
+	assert(y < int(Graphics::ScreenHeight));
+	return pSysBuffer[Graphics::ScreenWidth * y + x];
+}
+
 void Graphics::DrawSpriteNonChroma(int x, int y, const Surface & s)
 {
 	DrawSpriteNonChroma(x, y, s.GetRect(), s);
@@ -466,6 +475,66 @@ void Graphics::DrawSpriteSubstitute(int x, int y, Color substitute, RectI rec, c
 			{
 				//use color of substitute instead of the color from the surface
 				PutPixel(x + sx - rec.left, y + sy - rec.top, substitute);
+			}
+		}
+	}
+}
+
+void Graphics::DrawSpriteGhost(int x, int y, const Surface & s)
+{
+	DrawSpriteGhost(x, y, s.GetRect(), GetScreenRect(), s);
+}
+
+void Graphics::DrawSpriteGhost(int x, int y, const RectI & rec, const Surface & s)
+{
+	DrawSpriteGhost(x, y, rec, GetScreenRect(), s);
+}
+
+void Graphics::DrawSpriteGhost(int x, int y, RectI rec, const RectI & clip, const Surface & s, Color chroma)
+{
+	assert(rec.left >= 0);
+	assert(rec.right <= s.GetWidth());
+	assert(rec.top >= 0);
+	assert(rec.bottom <= s.GetHeight());
+
+	//calc clip
+	if (x < clip.left)
+	{
+		rec.left += clip.left - x;
+		x = clip.left;
+	}
+	if (y < clip.top)
+	{
+		rec.top += clip.top - y;
+		y = clip.top;
+	}
+	if (x + rec.GetWidth() > clip.right)
+	{
+		rec.right -= x + rec.GetWidth() - clip.right;
+	}
+	if (y + rec.GetHeight() > clip.bottom)
+	{
+		rec.bottom -= y + rec.GetHeight() - clip.bottom;
+	}
+
+
+	for (int sx = rec.left; sx < rec.right; ++sx)
+	{
+		for (int sy = rec.top; sy < rec.bottom; ++sy)
+		{
+			const Color pixel = s.GetPixel(sx, sy);
+			if (pixel != chroma)
+			{
+				const int xDest = x + sx - rec.left;
+				const int yDest = y + sy - rec.top;
+				const Color destPixel = GetPixel(xDest, yDest);
+
+				const Color blendedPix = {
+					unsigned char((destPixel.GetR() + pixel.GetR()) / 2),
+					unsigned char((destPixel.GetG() + pixel.GetG()) / 2),
+					unsigned char((destPixel.GetB() + pixel.GetB()) / 2),
+				};
+				PutPixel(x + sx - rec.left, y + sy - rec.top, blendedPix);
 			}
 		}
 	}
