@@ -419,6 +419,58 @@ void Graphics::DrawSprite(int x, int y, RectI rec, const RectI & clip, const Sur
 	}
 }
 
+void Graphics::DrawSpriteSubstitute(int x, int y, Color substitute, const Surface & s)
+{
+	DrawSpriteSubstitute(x, y, substitute, s.GetRect(), GetScreenRect(), s);
+}
+
+void Graphics::DrawSpriteSubstitute(int x, int y, Color substitute, const RectI & rec, const Surface & s)
+{
+	DrawSpriteSubstitute(x, y, substitute, rec, GetScreenRect(), s);
+}
+
+void Graphics::DrawSpriteSubstitute(int x, int y, Color substitute, RectI rec, const RectI & clip, const Surface & s, Color chroma)
+{
+	assert(rec.left >= 0);
+	assert(rec.right <= s.GetWidth());
+	assert(rec.top >= 0);
+	assert(rec.left <= s.GetHeight());
+
+	//calc clip
+	if (x < clip.left)
+	{
+		rec.left += clip.left - x;
+		x = clip.left;
+	}
+	if (y < clip.top)
+	{
+		rec.top += clip.top - y;
+		y = clip.top;
+	}
+	if (x + rec.GetWidth() > clip.right)
+	{
+		rec.right -= x + rec.GetWidth() - clip.right;
+	}
+	if (y + rec.GetHeight() > clip.bottom)
+	{
+		rec.bottom -= y + rec.GetHeight() - clip.bottom;
+	}
+
+
+	for (int sx = rec.left; sx < rec.right; ++sx)
+	{
+		for (int sy = rec.top; sy < rec.bottom; ++sy)
+		{
+			const Color pixel = s.GetPixel(sx, sy);
+			if (pixel != chroma)
+			{
+				//use color of substitute instead of the color from the surface
+				PutPixel(x + sx - rec.left, y + sy - rec.top, substitute);
+			}
+		}
+	}
+}
+
 
 //////////////////////////////////////////////////
 //           Graphics Exception

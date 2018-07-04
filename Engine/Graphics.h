@@ -65,6 +65,10 @@ public:
 	void DrawSprite(int x, int y, const Surface& s);
 	void DrawSprite(int x, int y, const RectI& rec, const Surface& s);
 	void DrawSprite(int x, int y, RectI rec, const RectI& clip, const Surface& s,Color chroma = Colors::Magenta);
+	//version of draw sprite that allows you to substitute a color
+	void DrawSpriteSubstitute(int x, int y, Color substitute, const Surface& s);
+	void DrawSpriteSubstitute(int x, int y, Color substitute, const RectI& rec, const Surface& s);
+	void DrawSpriteSubstitute(int x, int y, Color substitute, RectI rec, const RectI& clip, const Surface& s, Color chroma = Colors::White);
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
