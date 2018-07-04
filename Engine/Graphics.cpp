@@ -383,7 +383,7 @@ void Graphics::DrawSprite(int x, int y, RectI rec, const RectI & clip, const Sur
 	assert(rec.left >= 0);
 	assert(rec.right <= s.GetWidth());
 	assert(rec.top >= 0);
-	assert(rec.left <= s.GetHeight());
+	assert(rec.bottom <= s.GetHeight());
 
 	//calc clip
 	if (x < clip.left)
@@ -434,7 +434,7 @@ void Graphics::DrawSpriteSubstitute(int x, int y, Color substitute, RectI rec, c
 	assert(rec.left >= 0);
 	assert(rec.right <= s.GetWidth());
 	assert(rec.top >= 0);
-	assert(rec.left <= s.GetHeight());
+	assert(rec.bottom <= s.GetHeight());
 
 	//calc clip
 	if (x < clip.left)
