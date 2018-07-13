@@ -1,5 +1,6 @@
 #include "Font.h"
 #include <assert.h>
+#include "SpriteEffect.h"
 
 Font::Font(const std::string & filename, Color chroma)
 	:
@@ -14,8 +15,10 @@ Font::Font(const std::string & filename, Color chroma)
 	assert( glyphHeight * nRows == surface.GetHeight() );
 }
 
-void Font::DrawText(const std::string & text, const Vei2 pos, Graphics & gfx) const
+void Font::DrawText(const std::string & text, const Vei2 pos, Graphics & gfx, Color color) const
 {
+	//create effect functor
+	SpriteEffect::Substitution e = { chroma,color };
 	//curPos is the pos that we are drawing to on the screen
 	Vei2 curPos = pos;
 	for (auto c : text)
@@ -33,7 +36,7 @@ void Font::DrawText(const std::string & text, const Vei2 pos, Graphics & gfx) co
 		//first char + 1 becuase might as well skip ' '
 		else if ( c >= firstChar + 1 && c <= lastChar )
 		{
-			gfx.DrawSpriteSubstitute( curPos.x, curPos.y,Colors::White, MapGlyphRect( c ), gfx.GetScreenRect(), surface, chroma );
+			gfx.DrawSprite( curPos.x, curPos.y, MapGlyphRect( c ), gfx.GetScreenRect(), surface, e );
 		}
 		//advances screen pos to next char
 		curPos.x += glyphWidth;
